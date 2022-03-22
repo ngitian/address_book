@@ -1,3 +1,5 @@
+# makefile is for windows at the moment, need to update for linux and mac
+
 CC=gcc
 
 all: program
