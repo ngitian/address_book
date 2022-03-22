@@ -11,7 +11,6 @@ Address Book is a small application written in C language. It keeps track of nam
 <br>
 
 ## Group Members <a name="member"></a> <br>
-Known in class as "Group 3"
 * Daniel Milligan
 * Gabriel Policarpio
 * Krish Chauhan
