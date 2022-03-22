@@ -6,7 +6,8 @@
 #include <errno.h>
 #include <ctype.h>
 
-#include "address_book.h"
+#include "../include/address_book_fops.h"
+#include "../include/address_book.h"
 
 Status load_file(AddressBook *address_book)
 {

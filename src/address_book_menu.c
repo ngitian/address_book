@@ -4,10 +4,12 @@
 #include <string.h>
 #include <ctype.h>
 
-#include "abk_fileops.h"
-#include "abk_log.h"
-#include "abk_menus.h"
-#include "abk.h"
+// #include "abk_fileops.h"
+// #include "abk_log.h"
+// #include "abk_menus.h"
+// #include "abk.h"
+#include "../include/address_book_menu.h"
+#include "../include/address_book.h"
 
 int get_option(int type, const char *msg)
 {
@@ -19,6 +21,24 @@ int get_option(int type, const char *msg)
 	 */ 
 
 	/* Fill the code to add above functionality */
+	
+	int result;
+	printf("%s", msg);
+	switch (type)
+	{
+		case NONE:
+			scanf("");
+			break;
+		case NUM:
+			scanf("%d", &result);
+			fflush(stdin);
+			break;
+		case CHAR:
+			scanf("%c", &result);
+			break;
+	}
+	
+	return result;
 }
 
 Status save_prompt(AddressBook *address_book)
@@ -63,7 +83,7 @@ void menu_header(const char *str)
 	system("clear");
 
 	printf("#######  Address Book  #######\n");
-	if (str != '\0')
+	if (str[0] != '\0')
 	{
 		printf("#######  %s\n", str);
 	}
