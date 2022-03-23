@@ -20,6 +20,8 @@
 #define FIELD_DELIMITER				','
 #define NEXT_ENTRY					'\n'
 
+#define MAX_ENTRIES 				100
+
 typedef int bool_t;
 
 typedef enum 
