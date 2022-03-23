@@ -9,6 +9,7 @@
 // #include "abk_menus.h"
 // #include "abk.h"
 #include "../include/address_book_menu.h"
+#include "../include/address_book_fops.h"
 #include "../include/address_book.h"
 
 int get_option(int type, const char *msg)
