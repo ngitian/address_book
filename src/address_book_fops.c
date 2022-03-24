@@ -48,6 +48,7 @@ Status load_file(AddressBook *address_book)
 		// read first line, number of entries
 		int size;
 		fscanf(address_book->fp, "%d\n", &size);
+		address_book->count = size;
 		
 		// read, process and load content
 		for (int row = 0; row < size; ++row) {
