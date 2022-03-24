@@ -314,14 +314,11 @@ Status add_contacts(AddressBook *address_book)
 				emailFlag = 1;
 				++emailsInputCounter;
 				break;
-			case e_no_opt: // bad input
-				break;
-			default: // bad input
+			default: // todo bad input
 				break;
 		}
 	}
 
-	
 	// todo validation, no ','
 
 	return e_success;
@@ -337,6 +334,39 @@ Status search(const char *str, AddressBook *address_book, int loop_count, int fi
 Status search_contact(AddressBook *address_book)
 {
 	/* Add the functionality for search contacts here */
+
+	menu_header("Search Contact by:\n");
+
+	// menu
+	printf("0. Back\n");
+	printf("1. Name\n");
+	printf("2. Phone No\n");
+	printf("3. Email ID\n");
+	printf("4. Serial No\n");
+
+	// read input
+	int option;
+	option = get_option(NUM, "Please select an option: ");
+
+	switch (option)
+	{
+		case e_first_opt: // back
+			break;
+		case e_second_opt: // name
+			printf("Enter the Name: ");
+			break;
+		case e_third_opt: // phone
+			printf("Enter the Phone Number: ");
+			break;
+		case e_fourth_opt: // email
+			printf("Enter the Email ID: ");
+			break;
+		case e_fifth_opt: // serial number
+			break;
+		default: // bad inputs
+			break;
+	}
+
 
 	return e_success;
 }
