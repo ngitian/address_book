@@ -322,8 +322,10 @@ Status add_contacts(AddressBook *address_book)
 
 Status search(const char *str, AddressBook *address_book, int loop_count, int field, const char *msg, Modes mode)
 {
-	/* Add the functionality for adding contacts here */
-	
+	for (int i = 0; i < address_book->count; ++i) {
+		
+	}
+
 	return e_success;
 }
 
@@ -344,18 +346,22 @@ Status search_contact(AddressBook *address_book)
 	int option;
 	option = get_option(NUM, "Please select an option: ");
 
+	char userInput[NAME_LEN];
 	switch (option)
 	{
 		case e_first_opt: // back
 			break;
 		case e_second_opt: // name
 			printf("Enter the Name: ");
+			scanf("%s", userInput);
 			break;
 		case e_third_opt: // phone
 			printf("Enter the Phone Number: ");
+			scanf("%s", userInput);
 			break;
 		case e_fourth_opt: // email
 			printf("Enter the Email ID: ");
+			scanf("%s", userInput);
 			break;
 		case e_fifth_opt: // serial number
 			break;
