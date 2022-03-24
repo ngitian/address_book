@@ -95,8 +95,8 @@ Status save_file(AddressBook *address_book)
 		ContactInfo *cI = &(address_book->list[i]);
 		fprintf(address_book->fp, "\n%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,",
 			cI->name[0],
-			cI->phone_numbers[0], cI->phone_numbers[1], cI->phone_numbers[1], cI->phone_numbers[1], cI->phone_numbers[1],
-			cI->email_addresses[0], cI->email_addresses[1], cI->email_addresses[1], cI->email_addresses[1], cI->email_addresses[1]
+			cI->phone_numbers[0], cI->phone_numbers[1], cI->phone_numbers[2], cI->phone_numbers[3], cI->phone_numbers[4],
+			cI->email_addresses[0], cI->email_addresses[1], cI->email_addresses[2], cI->email_addresses[3], cI->email_addresses[4]
 		);
 	}
 
