@@ -6,6 +6,6 @@
 Status load_file(AddressBook *address_book);
 Status save_file(AddressBook *address_book);
 
-void parseCSVRow(char* line, AddressBook *address_book, int row);
+void parseCSVRow(AddressBook *address_book, int row);
 
 #endif
