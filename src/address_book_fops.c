@@ -29,10 +29,10 @@ Status load_file(AddressBook *address_book)
 
 	for (int i = 0; i < MAX_ENTRIES; ++i) {
 		address_book->list[i].si_no = -1;
-		strcpy("empty name", address_book->list[i].name[0]);
+		strcpy(address_book->list[i].name[0], "empty name");
 		for (int j = 0; j < PHONE_NUMBER_COUNT; ++j) {
-			strcpy("empty phone", address_book->list[i].phone_numbers[j]);
-			strcpy("empty email", address_book->list[i].email_addresses[j]);
+			strcpy(address_book->list[i].phone_numbers[j], "empty phone");
+			strcpy(address_book->list[i].email_addresses[j], "empty email");
 		}
 	}
 
@@ -41,30 +41,31 @@ Status load_file(AddressBook *address_book)
 		/* 
 		 * Do the neccessary step to open the file
 		 * Do error handling
-		 */ 
+		 */
 
-		// read content
+		address_book->fp = fopen(DEFAULT_FILE, "r");
 
-		// process and load content
+		// instantiate all variables
+		char nameInput[NAME_LEN][NAME_COUNT];
+		char phonesInput[PHONE_NUMBER_COUNT][NUMBER_LEN];
+		char emailsInput[EMAIL_ID_COUNT][EMAIL_ID_LEN];
 
-		for (int i = 0; i < MAX_ENTRIES; ++i) {
-			ContactInfo *ci = &(address_book->list[i]);
-			printf("%d: %s[phone: ", ci->si_no, ci->name);
+		// read first line, number of entries
+		int size;
+		fscanf(address_book->fp, "%d\n", &size);
+		
+		// read, process and load content
+		char line[1024];
+		int row = 0;
+		while (fgets(line, 1024, address_book->fp) != NULL)
+		{
+			char* tmp = strdup(line);
+			parseCSVRow(tmp, address_book, row);
 
-			for (int j = 0; j < PHONE_NUMBER_COUNT; ++j)
-			{
-				printf("%s,", ci->phone_numbers[j]);
-			}
-
-			printf("emails: ");
-			for (int j = 0; j < EMAIL_ID_COUNT; ++j)
-			{
-				printf("%s,", ci->email_addresses[j]);
-			}
-
-			printf("]\n");
+			free(tmp);
+			++row;
 		}
-
+		
 	}
 	else // file doesn't exists
 	{
@@ -103,4 +104,8 @@ Status save_file(AddressBook *address_book)
 	free(address_book->list);
 
 	return e_success;
+}
+
+void parseCSVRow(char* line, AddressBook *address_book, int row) {
+	printf("%s\n", line);
 }

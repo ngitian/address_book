@@ -28,14 +28,14 @@ int get_option(int type, const char *msg)
 	switch (type)
 	{
 		case NONE:
-			scanf("");
+			scanf(" ");
 			break;
 		case NUM:
 			scanf("%d", &result);
 			fflush(stdin);
 			break;
 		case CHAR:
-			scanf("%c", &result);
+			scanf("%lc", &result);
 			break;
 	}
 	
@@ -81,7 +81,7 @@ void menu_header(const char *str)
 {
 	fflush(stdout);
 
-	system("clear");
+	// system("clear");
 
 	printf("#######  Address Book  #######\n");
 	if (str[0] != '\0')
