@@ -72,7 +72,36 @@ Status list_contacts(AddressBook *address_book, const char *title, int *index, c
 	 * Add code to list all the contacts availabe in address_book.csv file
 	 * Should be menu based
 	 * The menu provide navigation option if the entries increase the page size
-	 */ 
+	 */
+	
+	menu_header(title);
+
+	// standard list contacts header format, 110 chars long
+	printf("==============================================================================================================\n");
+	printf(": S.No : Name                            : Phone No                        : Email ID                        :\n");
+	printf("==============================================================================================================\n");
+
+	// collect contact info from address_book->list[index]
+	ContactInfo *cI = &(address_book->list[*index]);
+
+	switch (mode) {
+		case e_search:
+			break;
+		case e_edit:
+			break;
+		case e_delete:
+			break;
+		case e_list:
+			printf(": %-5d: %-32s: %-32s: %-32s:\n", cI->si_no, cI->name[0], cI->phone_numbers[0], cI->email_addresses[0]);
+			for (int j = 1; j < PHONE_NUMBER_COUNT; ++j) {
+				printf(": %*c: %*c: %-32s: %-32s:\n", 5, ' ', 32, ' ', cI->phone_numbers[j], cI->email_addresses[j]);
+			}
+			printf("==============================================================================================================\n");
+
+			// user input, (q)uit, (n)ext, (p)revious
+
+			break;
+	}
 
 	return e_success;
 }
@@ -139,6 +168,9 @@ Status menu(AddressBook *address_book)
 				delete_contact(address_book);
 				break;
 			case e_list_contacts:
+				; // this is necessary to be here to be after a label
+				int index = 0;
+				list_contacts(address_book, "Search Result:\n", &index, "msg goes here", e_list);
 				break;
 				/* Add your implementation to call list_contacts function here */
 			case e_save:
@@ -155,6 +187,8 @@ Status menu(AddressBook *address_book)
 Status add_contacts(AddressBook *address_book)
 {
 	/* Add the functionality for adding contacts here */
+
+	// todo validation, no ','
 }
 
 Status search(const char *str, AddressBook *address_book, int loop_count, int field, const char *msg, Modes mode)
