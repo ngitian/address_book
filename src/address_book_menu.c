@@ -188,6 +188,7 @@ Status menu(AddressBook *address_book)
 		{
 			case e_add_contact:
 				/* Add your implementation to call add_contacts function here */
+				add_contacts(address_book);
 				break;
 			case e_search_contact:
 				search_contact(address_book);
@@ -224,7 +225,105 @@ Status add_contacts(AddressBook *address_book)
 {
 	/* Add the functionality for adding contacts here */
 
+	char nameInput[NAME_COUNT][NAME_LEN];
+	char phonesInput[PHONE_NUMBER_COUNT][NUMBER_LEN];
+	char emailsInput[EMAIL_ID_COUNT][EMAIL_ID_LEN];
+
+	int phonesInputCounter = 0;
+	int emailsInputCounter = 0;
+
+	int nameFlag = 0;
+	int phoneFlag = 0;
+	int emailFlag = 0;
+	int running = 1;
+
+	while (running) {
+		menu_header("Add Contact:\n");
+
+		// print menu
+		printf("0. Back\n");
+		printf("1. Name       : ");
+		if (nameFlag) {
+			printf("%s", nameInput[0]);
+		}
+		printf("\n2. Phone No %d : ", phonesInputCounter + 1);
+		if (phoneFlag) {
+			for (int i = 0; i < phonesInputCounter; ++i) {
+				printf("%s ", phonesInput[i]);
+			}
+		}
+		printf("\n3. Email ID %d : ", emailsInputCounter + 1);
+		if (emailFlag) {
+			for (int i = 0; i < emailsInputCounter; ++i) {
+				printf("%s ", emailsInput[i]);
+			}
+		}
+		printf("\n");
+
+
+		// menu input
+		int option;
+		option = get_option(NUM, "\nPlease select an option: ");
+
+		switch (option)
+		{
+			case e_first_opt: // exit
+				// save information if there's a name at least
+				if (nameFlag) {
+					address_book->count += 1;
+					int index = address_book->count - 1;
+					address_book->list[index].si_no = index + 1;
+					strcpy(address_book->list[index].name[0], nameInput[0]);
+					for (int i = 0; i < PHONE_NUMBER_COUNT; ++i) {
+						if (i < phonesInputCounter) {
+							strcpy(address_book->list[index].phone_numbers[i], phonesInput[i]);
+						} else {
+							strcpy(address_book->list[index].phone_numbers[i], "");
+						}
+						if (i < emailsInputCounter) {
+							strcpy(address_book->list[index].email_addresses[i], emailsInput[i]);
+						} else {
+							strcpy(address_book->list[index].email_addresses[i], "");
+						}
+					}
+				}
+				
+				running = 0;
+				break;
+			case e_second_opt: // add name, only 1 name
+				printf("Enter the name: ");
+				scanf("%s", nameInput[0]);
+
+				// todo input validation
+				nameFlag = 1;
+				break;
+			case e_third_opt: // add phone number, only 5
+				printf("Enter Phone Number %d: [Please reenter the same option for additional Phone Number]: ", phonesInputCounter + 1);
+				scanf("%s", phonesInput[phonesInputCounter]);
+
+				// todo input validation
+				phoneFlag = 1;
+				++phonesInputCounter;
+				break;
+			case e_fourth_opt: // add email, only 5
+				printf("Enter Email ID %d: [Please reenter the same option for additional Email ID]: ", emailsInputCounter + 1);
+				scanf("%s", emailsInput[emailsInputCounter]);
+
+				// todo input validation
+				emailFlag = 1;
+				++emailsInputCounter;
+				break;
+			case e_no_opt: // bad input
+				break;
+			default: // bad input
+				break;
+		}
+	}
+
+	
 	// todo validation, no ','
+
+	return e_success;
 }
 
 Status search(const char *str, AddressBook *address_book, int loop_count, int field, const char *msg, Modes mode)
