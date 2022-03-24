@@ -35,10 +35,9 @@ int get_option(int type, const char *msg)
 			fflush(stdin);
 			break;
 		case CHAR:
-			scanf("%lc", &result);
+			scanf(" %lc", &result);
 			break;
 	}
-	
 	return result;
 }
 
@@ -98,7 +97,38 @@ Status list_contacts(AddressBook *address_book, const char *title, int *index, c
 			}
 			printf("==============================================================================================================\n");
 
-			// user input, (q)uit, (n)ext, (p)revious
+			// user input, (n)ext, (p)revious, (q)uit
+			char option;
+			option = get_option(CHAR, msg);
+			int newIndex;
+			char newMsg[100];
+			switch (option)
+			{
+				case 'n':
+					newIndex = *index + 1;
+					if (newIndex == address_book->count - 1) {
+						strcpy(newMsg, "Press: [p]=previous, [q] | Cancel: ");
+					} else {
+						strcpy(newMsg, "Press: [n]=next, [p]=previous, [q] | Cancel: ");
+					}
+					list_contacts(address_book, "Search Result:\n", &newIndex, newMsg, e_list);
+					break;
+				case 'p':
+					newIndex = *index - 1;
+					if (newIndex == 0) {
+						strcpy(newMsg, "Press: [n]=next, [q] | Cancel: ");
+					} else {
+						strcpy(newMsg, "Press: [n]=next, [p]=previous, [q] | Cancel: ");
+					}
+					list_contacts(address_book, "Search Result:\n", &newIndex, newMsg, e_list); //todo fix message
+					break;
+				case 'q':
+					break;
+				default:
+					// todo catch invalid input other than n, p, q
+					break;
+
+			}
 
 			break;
 	}
@@ -170,7 +200,12 @@ Status menu(AddressBook *address_book)
 			case e_list_contacts:
 				; // this is necessary to be here to be after a label
 				int index = 0;
-				list_contacts(address_book, "Search Result:\n", &index, "msg goes here", e_list);
+				char msg[100];
+				if (address_book->count > 1)
+					strcpy(msg, "Press: [n] = next, [q] | Cancel: ");
+				else
+					strcpy(msg, "Press: [q] | Cancel: ");
+				list_contacts(address_book, "Search Result:\n", &index, msg, e_list);
 				break;
 				/* Add your implementation to call list_contacts function here */
 			case e_save:
