@@ -88,7 +88,18 @@ Status save_file(AddressBook *address_book)
 	/* 
 	 * Add the logic to save the file
 	 * Make sure to do error handling
-	 */ 
+	 */
+
+	fprintf(address_book->fp, "%d", address_book->count);
+	for (int i = 0; i<address_book->count; ++i) {
+		ContactInfo *cI = &(address_book->list[i]);
+		fprintf(address_book->fp, "\n%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,",
+			cI->name[0],
+			cI->phone_numbers[0], cI->phone_numbers[1], cI->phone_numbers[1], cI->phone_numbers[1], cI->phone_numbers[1],
+			cI->email_addresses[0], cI->email_addresses[1], cI->email_addresses[1], cI->email_addresses[1], cI->email_addresses[1]
+		);
+	}
+
 
 	fclose(address_book->fp);
 	free(address_book->list);
