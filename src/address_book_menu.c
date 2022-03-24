@@ -99,6 +99,8 @@ Status list_contacts(AddressBook *address_book, const char *title, int *index, c
 			printf("==============================================================================================================\n");
 
 			// user input, (q)uit, (n)ext, (p)revious
+			char option;
+			option = get_option(CHAR, msg);
 
 			break;
 	}
@@ -170,7 +172,12 @@ Status menu(AddressBook *address_book)
 			case e_list_contacts:
 				; // this is necessary to be here to be after a label
 				int index = 0;
-				list_contacts(address_book, "Search Result:\n", &index, "msg goes here", e_list);
+				char msg[100];
+				if (address_book->count > 1)
+					strcpy(msg, "Press: [n] = next, [q] | Cancel: ");
+				else
+					strcpy(msg, "Press: [q] | Cancel: ");
+				list_contacts(address_book, "Search Result:\n", &index, msg, e_list);
 				break;
 				/* Add your implementation to call list_contacts function here */
 			case e_save:
