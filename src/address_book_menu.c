@@ -91,11 +91,7 @@ Status list_contacts(AddressBook *address_book, const char *title, int *index, c
 		case e_delete:
 			break;
 		case e_list:
-			printf(": %-5d: %-32s: %-32s: %-32s:\n", cI->si_no, cI->name[0], cI->phone_numbers[0], cI->email_addresses[0]);
-			for (int j = 1; j < PHONE_NUMBER_COUNT; ++j) {
-				printf(": %*c: %*c: %-32s: %-32s:\n", 5, ' ', 32, ' ', cI->phone_numbers[j], cI->email_addresses[j]);
-			}
-			printf("==============================================================================================================\n");
+			print_format_list(cI);
 
 			// user input, (n)ext, (p)revious, (q)uit
 			char option;
@@ -383,4 +379,19 @@ Status delete_contact(AddressBook *address_book)
 	/* Add the functionality for delete contacts here */
 
 	return e_success;
+}
+
+
+void print_format_list(const ContactInfo* contactInfo)
+{
+	/**
+	 * @brief print a contactInfo into the search result format
+	 */
+	printf(": %-5d: %-32s: %-32s: %-32s:\n",
+		contactInfo->si_no, contactInfo->name[0], contactInfo->phone_numbers[0], contactInfo->email_addresses[0]
+	);
+	for (int j = 1; j < PHONE_NUMBER_COUNT; ++j) {
+		printf(": %*c: %*c: %-32s: %-32s:\n", 5, ' ', 32, ' ', contactInfo->phone_numbers[j], contactInfo->email_addresses[j]);
+	}
+	printf("==============================================================================================================\n");
 }
