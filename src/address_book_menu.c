@@ -121,6 +121,7 @@ Status list_contacts(AddressBook *address_book, const char *title, int *index, c
 						strcpy(newMsg, "Press: [n]=next, [p]=previous, [q] | Cancel: ");
 					}
 					list_contacts(address_book, "Search Result:\n", &newIndex, newMsg, e_list); //todo fix message
+
 					break;
 				case 'q':
 					break;
