@@ -35,10 +35,9 @@ int get_option(int type, const char *msg)
 			fflush(stdin);
 			break;
 		case CHAR:
-			scanf("%lc", &result);
+			scanf(" %lc", &result);
 			break;
 	}
-	
 	return result;
 }
 
@@ -98,9 +97,28 @@ Status list_contacts(AddressBook *address_book, const char *title, int *index, c
 			}
 			printf("==============================================================================================================\n");
 
-			// user input, (q)uit, (n)ext, (p)revious
+			// user input, (n)ext, (p)revious, (q)uit
 			char option;
 			option = get_option(CHAR, msg);
+			int newIndex;
+			switch (option)
+			{
+				case 'n':
+					newIndex = *index + 1;
+					printf("%d", newIndex);
+					list_contacts(address_book, "Search Result:\n", &newIndex, msg, e_list);
+					break;
+				case 'p':
+					newIndex = *index - 1;
+					list_contacts(address_book, "Search Result:\n", &newIndex, msg, e_list); //todo fix message
+					break;
+				case 'q':
+					break;
+				default:
+					// todo catch invalid input other than n, p, q
+					break;
+
+			}
 
 			break;
 	}
