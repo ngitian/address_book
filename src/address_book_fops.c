@@ -153,7 +153,7 @@ void parseCSVRow(AddressBook *address_book, int row) {
 			++fieldCounter;
 			tmp[0] = '\0';
 		} else {
-			strcat(tmp, &c);
+			strncat(tmp, &c, 1);
 		}
 	}
 
