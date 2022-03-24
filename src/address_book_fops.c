@@ -52,9 +52,10 @@ Status load_file(AddressBook *address_book)
 		
 		// read, process and load content
 		for (int row = 0; row < size; ++row) {
-			parseCSVRow(address_book, row);
+			parseCSVRow(address_book, row); 
 		}
 		
+		// todo csv file input validation
 	}
 	else // file doesn't exists
 	{
@@ -157,7 +158,7 @@ void parseCSVRow(AddressBook *address_book, int row) {
 	}
 
 	// store input in address_book's list of ContactInfo
-	address_book->list[row].si_no = row;
+	address_book->list[row].si_no = row + 1;
 
 	strcpy(address_book->list[row].name[0], nameInput[0]);
 	strcpy(address_book->list[row].phone_numbers[0], phonesInput[0]);
