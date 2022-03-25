@@ -8,14 +8,9 @@
 // #include "abk_log.h"
 // #include "abk_menus.h"
 // #include "abk.h"
-//#include "../include/address_book_menu.h"
-//#include "../include/address_book_fops.h"
-//#include "../include/address_book.h"
-
-#include "address_book_fops.h"
-#include "address_book_menu.h"
-#include "address_book.h"
-
+#include "../include/address_book_menu.h"
+#include "../include/address_book_fops.h"
+#include "../include/address_book.h"
 
 int get_option(int type, const char *msg)
 {
@@ -391,7 +386,7 @@ Status edit_contact(AddressBook *address_book){
 	/* Add the functionality for edit contacts here */
 
 	int STR_LEN;
-	char userInput[max(max(NAME_LEN, EMAIL_ID_LEN), NUMBER_LEN)]; //char array for user input.  NOTE: size set at NAME_LEN = 32.  This is ok because Phone No and Email max size is the same.
+	char userInput[max(max(NAME_LEN, EMAIL_ID_LEN), NUMBER_LEN)]; //char array for user input
 	char *msg = "Press: [s] = Select, Press: [q] | Cancel: ";
 	int option;
 
@@ -404,7 +399,6 @@ Status edit_contact(AddressBook *address_book){
 		printf("1. Name\n");
 		printf("2. Phone No\n");
 		printf("3. Email ID\n");
-		printf("4. Serial Number\n");
 		printf("0. Back\n");
 
 		// read input
@@ -415,46 +409,91 @@ Status edit_contact(AddressBook *address_book){
 			case e_first_opt: // back
 				break;
 			case e_second_opt: // name
-				printf("Enter the name you wish to edit: ");
-				fgets(userInput, NAME_LEN, stdin);
-				STR_LEN = strlen(userInput) - 1;
-
-				if (userInput[STR_LEN] == '\n'){
-					userInput[STR_LEN] = '\0'
-				}
+				edit_person(person, option, e_edit);
 				break;
 			case e_third_opt: // phone
-				printf("Enter the phone number you wish to edit: ");
-				fgets(userInput, NUMBER_LEN, stdin);
-				STR_LEN = strlen(userInput) - 1;
-				if (userInput[STR_LEN] == '\n'){
-					userInput[STR_LEN] = '\0'
-				}
+				edit_person(person, option, e_edit);
 				break;
 			case e_fourth_opt: //email
-				printf("Enter the email address you wish to edit: ");
-				fgets(userInput, EMAIL_ID_LEN, stdin);
-				STR_LEN = strlen(userInput) - 1;
-				if (userInput[STR_LEN] == '\n'){
-					userInput[STR_LEN] = '\0'
-				}
-				break;
-			case e_fifth_opt: // serial number
-				printf("Enter the serial number you wish to edit: ");
-				fgets(userInput, 32, stdin);
-				STR_LEN = strlen(userInput) - 1;
-				if (userInput[STR_LEN] == '\n'){
-					userInput[STR_LEN] = '\0'
-				}
+				edit_person(person, option, e_edit);
 				break;
 			default:
 				option = e_no_opt;
 				break;
-
 		}
 
 	}while(option != 0);
 
+	return e_success;
+}
+
+Status edit_person(ContactInfo *contact, MenuOptions option, Modes mode){
+	int index;
+	int STR_LEN;
+	char *userInput;
+
+	/*NEED TO DO
+	 * USE list_contacts TO SHOW CONTACTS BEFORE CHOOSING WHO TO EDIT
+	 */
+
+	switch(option){
+		case e_first_opt: // name
+			userInput = malloc(sizeof(char) * NAME_LEN);
+			printf("Enter the number of the contact whose name you wish to edit [%d MAX]:", NAME_COUNT);
+			fgets(userInput, NAME_LEN, stdin);
+			index = atoi(userInput);
+
+			if(index < 1 || index > NAME_COUNT){
+				break;
+			}
+			printf("Enter the new name: [Pressing enter just removes the name entry]: ", index);
+			fgets(userInput, NAME_LEN, stdin);
+			STR_LEN = strlen(userInput) - 1;
+			if(userInput[STR_LEN] == '\n'){
+				userInput[STR_LEN] = '\0';
+			}
+			strcpy(person->name[index - 1], userInput);
+			free(userInput);
+			break;
+		case e_second_opt: // phone
+			userInput = malloc(sizeof(char) * NUMBER_LEN);
+			printf("Enter the number of the contact whose phone you wish to edit [%d MAX]:", NAME_COUNT);
+			fgets(userInput, NUMBER_LEN, stdin);
+			index = atoi(userInput);
+
+			if(index < 1 || index > PHONE_NUMBER_COUNT){
+				break;
+			}
+			printf("Enter the new phone number: [Pressing enter just removes the phone number entry]: ", index);
+			fgets(userInput, NUMBER_LEN, stdin);
+			STR_LEN = strlen(userInput) - 1;
+			if(userInput[STR_LEN] == '\n'){
+				userInput[STR_LEN] = '\0';
+			}
+			strcpy(person->phone_numbers[index - 1], userInput);
+			free(userInput);
+			break;
+		case e_third_opt: // email
+			userInput = malloc(sizeof(char) * EMAIL_ID_LEN);
+			printf("Enter the number of the contact whose email you wish to edit [%d MAX]:", EMAIL_ID_COUNT);
+			fgets(userInput, EMAIL_ID_LEN, stdin);
+			index = atoi(userInput);
+
+			if(index < 1 || index > EMAIL_ID_COUNT){
+				break;
+			}
+			printf("Enter the new email: [Pressing enter just removes the email entry]: ", index);
+			fgets(userInput, EMAIL_ID_LEN, stdin);
+			STR_LEN = strlen(userInput) - 1;
+			if(userInput[STR_LEN] == '\n'){
+				userInput[STR_LEN] = '\0';
+			}
+			strcpy(person->email_addresses[index - 1], userInput);
+			free(userInput);
+			break;
+		default:
+			break;
+	}
 	return e_success;
 }
 
