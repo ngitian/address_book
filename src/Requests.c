@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "../include/address_book.h"
+#include "../include/Requests.h"
 
 int flushBuffer()
 {
@@ -209,21 +210,23 @@ char *requestEmailAddressInput(int emailAddressIndex)
     readString(inputPrompt, errorPrompt, EMAIL_ID_LEN, readEmailAddress);
 }
 
-//int main()
-//{
-    //while(1)
-    //{
-        //char * name = requestNameInput();
-        //printf("%s\n", name);
-        //free(name);
+/*
+int main()
+{
+    while(1)
+    {
+        char * name = requestNameInput();
+        printf("%s\n", name);
+        free(name);
 
-        //char * number = requestPhoneNumberInput(1);
-        //printf("%s\n", number);
-        //free(number);
+        char * number = requestPhoneNumberInput(1);
+        printf("%s\n", number);
+        free(number);
 
-        //char * email = requestEmailAddressInput(1);
-        //printf("%s\n", email);
-        //free(email);
-    //}
-    //return 0;
-//}
+        char * email = requestEmailAddressInput(1);
+        printf("%s\n", email);
+        free(email);
+    }
+    return 0;
+}
+*/
