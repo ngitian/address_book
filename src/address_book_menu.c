@@ -409,13 +409,13 @@ Status edit_contact(AddressBook *address_book){
 			case e_first_opt: // back
 				break;
 			case e_second_opt: // name
-				edit_person(person, option, e_edit);
+				edit_person(contact, option, e_edit);
 				break;
 			case e_third_opt: // phone
-				edit_person(person, option, e_edit);
+				edit_person(contact, option, e_edit);
 				break;
 			case e_fourth_opt: //email
-				edit_person(person, option, e_edit);
+				edit_person(contact, option, e_edit);
 				break;
 			default:
 				option = e_no_opt;
