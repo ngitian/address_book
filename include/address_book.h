@@ -79,4 +79,12 @@ typedef struct
 	int count;	
 } AddressBook;
 
+typedef enum
+{
+	e_name,
+	e_phone,
+	e_email,
+	e_si_no
+} Fields;
+
 #endif
