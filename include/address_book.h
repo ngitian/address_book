@@ -20,6 +20,8 @@
 #define FIELD_DELIMITER				','
 #define NEXT_ENTRY					'\n'
 
+#define MAX_ENTRIES 				100
+
 typedef int bool_t;
 
 typedef enum 
@@ -76,5 +78,13 @@ typedef struct
 	ContactInfo *list;
 	int count;	
 } AddressBook;
+
+typedef enum
+{
+	e_name,
+	e_phone,
+	e_email,
+	e_si_no
+} Fields;
 
 #endif
