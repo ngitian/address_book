@@ -83,12 +83,17 @@ Status list_contacts(AddressBook *address_book, const char *title, int *index, c
 
 	// collect contact info from address_book->list[index]
 	ContactInfo *cI;
-	printf("%d", *index);
 	if (*index == e_no_match) {
 		cI = NULL;
 	} else {
 		cI = &(address_book->list[*index]);
 	}
+
+	// declar variables
+	char option;
+	int newIndex;
+	char newMsg[100];
+
 
 	switch (mode) {
 		case e_search:
@@ -103,6 +108,14 @@ Status list_contacts(AddressBook *address_book, const char *title, int *index, c
 			}
 
 			// user input, (q)uit
+			option = get_option(CHAR, msg);
+			switch (option)
+			{
+				case 'q':
+					break;
+				default:
+					break;
+			}
 			break;
 		case e_edit:
 			break;
@@ -112,10 +125,7 @@ Status list_contacts(AddressBook *address_book, const char *title, int *index, c
 			print_format_list(cI);
 
 			// user input, (n)ext, (p)revious, (q)uit
-			char option;
 			option = get_option(CHAR, msg);
-			int newIndex;
-			char newMsg[100];
 			switch (option)
 			{
 				case 'n':
@@ -344,39 +354,39 @@ int search(const char *str, AddressBook *address_book, int loop_count, Fields fi
 	 * @brief search address_book list of ContactInfo based on field
 	 * @return e_no_match=-7 if not found, else return index of found ContactList
 	 */
-	int found = 0;
+	int found = -1;
 	// search if item exists
 	switch(field)
 	{
 		case e_name:
-			for (int i = 0; i < loop_count && !found; ++i) {
+			for (int i = 0; i < loop_count && found == -1; ++i) {
 				if ( strcmp(address_book->list[i].name[0], str) == 0) {
-					found = 1;
+					found = i;
 				}
 			}
 			break;
 		case e_phone: // phone
-			for (int i = 0; i < loop_count && !found; ++i) {
-				for (int j = 0; j < NUMBER_LEN && !found; ++j) {
+			for (int i = 0; i < loop_count && found == -1; ++i) {
+				for (int j = 0; j < NUMBER_LEN && found == -1; ++j) {
 					if (strcmp(address_book->list[i].phone_numbers[j], str) == 0) {
-						found = 1;
+						found = i;
 					}
 				}
 			}
 		case e_email: // email
-			for (int i = 0; i < loop_count && !found; ++i) {
-				for (int j = 0; j < EMAIL_ID_LEN && !found; ++j) {
+			for (int i = 0; i < loop_count && found == -1; ++i) {
+				for (int j = 0; j < EMAIL_ID_LEN && found == -1; ++j) {
 					if (strcmp(address_book->list[i].email_addresses[j], str) == 0) {
-						found = 1;
+						found = i;
 					}
 				}
 			}
 		case e_si_no: // serial number
 			;
 			int si = strtol(str, NULL, 10);
-			for (int i = 0; i < loop_count && !found; ++i) {
+			for (int i = 0; i < loop_count && found == -1; ++i) {
 				if (address_book->list[i].si_no == si) {
-					found = 1;
+					found = i;
 				}
 			}
 		default:
@@ -384,11 +394,11 @@ int search(const char *str, AddressBook *address_book, int loop_count, Fields fi
 	}
 
 	// if not found
-	if (!found) {
+	if (found == -1) {
 		return e_no_match;
 	}
 
-	return e_success;
+	return found;
 }
 
 Status search_contact(AddressBook *address_book)
@@ -441,7 +451,6 @@ Status search_contact(AddressBook *address_book)
 	int idx = search(userInput, address_book, address_book->count, field, "msg", e_search);
 	list_contacts(address_book, "Search Result:\n", &idx, "Press: [q] | Cancel: ", e_search);
 	
-
 	return e_success;
 }
 
