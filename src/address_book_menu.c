@@ -649,7 +649,7 @@ Status delete_person(AddressBook *address_book, int si_no)
 	if (option == 'Y')
 	{
 		address_book->count -= 1;
-		if (idx < address_book->count) // delete last item
+		if (idx == address_book->count) // delete last item
 		{
 			cI->si_no = -1;
 			strcpy(cI->name[0], "empty name");
