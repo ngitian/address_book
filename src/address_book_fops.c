@@ -101,8 +101,8 @@ Status save_file(AddressBook *address_book)
 	}
 
 
-	fclose(address_book->fp);
 	free(address_book->list);
+	fclose(address_book->fp);
 
 	return e_success;
 }

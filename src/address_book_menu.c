@@ -133,7 +133,7 @@ Status menu(AddressBook *address_book)
 				/* Add your implementation to call list_contacts function here */
 			case e_save:
 				save_file(address_book);
-				// load_file(address_book); // todo reload it right after saving to continue working on address book?
+				load_file(address_book); // todo reload it right after saving to continue working on address book?
 				break;
 			case e_exit:
 				break;
