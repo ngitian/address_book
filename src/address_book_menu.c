@@ -700,10 +700,14 @@ Status list_contact(AddressBook *address_book, int idx)
 		return e_success;
 	} else { // list first ContactList
 		print_contact(&(address_book->list[idx]));
-		if (idx == 0) {
-			strcpy(newMsg, "Press: [n]=next, [q] | Cancel: ");
+		if (address_book->count == 1) {
+			strcpy(newMsg, "Press: [q] | Cancel: ");
+		} else if (idx > 0 && idx < address_book->count - 1) {
+			strcpy(newMsg, "Press: [n] = Next, [p] = Previous, [q] | Cancel: ");
+		} else if (idx == address_book->count - 1) {
+			strcpy(newMsg, "Press: [p] = Previous, [q] | Cancel: ");
 		} else {
-			strcpy(newMsg, "Press: [n]=next, [p]=previous, [q] | Cancel: ");
+			strcpy(newMsg, "Press: [n] = Next, [q] | Cancel: ");
 		}
 	}
 
