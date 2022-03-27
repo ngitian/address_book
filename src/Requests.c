@@ -193,23 +193,24 @@ char *requestPhoneNumberInput(int phoneNumberIndex, Modes requestPurpose)
     switch(requestPurpose)
     {
         case e_add:
-            goto ADD_CONTACT;
-
-        case e_search:
+            sprintf(inputPromptBuffer, "%s%d%s", "Enter Phone Number ", phoneNumberIndex, 
+                ": [You may enter up to 5 Phone Numbers by selecting the same option after this]: ");
+            break;
 
         case e_edit:
+            sprintf(inputPromptBuffer, "%s%d%s", "Enter Phone Number ", phoneNumberIndex,
+                ": [Just enter removes the entry]: ");
+            break;
 
-        case e_delete:
+        case e_search:
+            sprintf(inputPromptBuffer, "%s%d%s", "Enter the Phone Number to search for: ");
+            break;
 
-        case e_list:
-        break;
+        // UNDEFINED BEHAVIOR
+        case e_list: case e_delete:
+        return NULL;
     }
 
-    ADD_CONTACT:
-    sprintf(inputPromptBuffer, "%s%d%s", "Enter Phone Number ", phoneNumberIndex, 
-        ": [You may enter up to 5 Phone Numbers by selecting the same option after this]: ");
-    
-    inputPrompt = inputPromptBuffer;
     return readString(inputPrompt, errorPrompt, NUMBER_LEN, readPhoneNumber);
 }
 
@@ -227,27 +228,27 @@ char *requestEmailAddressInput(int emailAddressIndex, Modes requestPurpose)
     switch(requestPurpose)
     {
         case e_add:
-            goto ADD_CONTACT;
-
-        case e_search:
+            sprintf(inputPromptBuffer, "%s%d%s", "Enter Email ID ", emailAddressIndex, 
+                ": [You may enter up to 5 Email IDs by selecting the same option after this]: ");
+            break;
 
         case e_edit:
+            sprintf(inputPromptBuffer, "%s%d%s", "Enter Email ID ", emailAddressIndex,
+                ": [Just enter removes the entry]: ");
+            break;
 
-        case e_delete:
+        case e_search:
+            sprintf(inputPromptBuffer, "%s", "Enter the Email ID to search for: ");
+            break;
 
-        case e_list:
-        break;
+        // UNDEFINED BEHAVIOR
+        case e_list: case e_delete:
+        return NULL;
     }
-
-    // Add contact request
-    ADD_CONTACT:
-    sprintf(inputPromptBuffer, "%s%d%s", "Enter Email ID ", emailAddressIndex, 
-        ": [You may enter up to 5 Email IDs by selecting the same option after this]: ");
-    inputPrompt = inputPromptBuffer;
     return readString(inputPrompt, errorPrompt, EMAIL_ID_LEN, readEmailAddress);
 }
 
-char readChar(char *inputPrompt, char *errorPrompt, char *validInputs, int numberValidInputs)
+char readChar(char *inputPrompt, char *errorPrompt, char *validInputs, int numberValidInputs, int returnNullOnBadValue)
 {
     char inputChar;
     int i = 0;
@@ -261,19 +262,78 @@ char readChar(char *inputPrompt, char *errorPrompt, char *validInputs, int numbe
     else
     {
         if(flushBuffer() > 0)
+        {
             goto badInput;
+        }
+            
     }
 
     singleCharInput:
     for(i = 0; i < numberValidInputs; i++)
     {
+        // Auto-convert to lowercase when applicable
         if(validInputs[i] == inputChar)
-            return inputChar;
+        {
+            if(inputChar >= 'A' && inputChar <= 'Z')
+                return inputChar + 32;
+            else
+                return inputChar;
+        }      
     }
+    if(returnNullOnBadValue == 1)
+        return '\0';
 
     badInput:
     printf("%s", errorPrompt);
     goto askForInput;
+}
+
+char requestExitSearchContactDisplay()
+{
+    char *inputPrompt = "Press: [s] = Return to Search Menu, [q] | Cancel: ";
+    char *errorPrompt = "ERROR - Please enter a valid option\n";
+
+    return readChar(inputPrompt, errorPrompt, "qQsS", 4, 0);
+}
+
+char requestSelectOrQuitEditDeleteContactSearch()
+{
+    char *inputPrompt = "Press: [s] = Select, [q] | Cancel: ";
+    char *errorPrompt = "ERROR - Please enter a valid option\n";
+
+    return readChar(inputPrompt, errorPrompt, "qQsS", 4, 0);
+}
+
+char requestConfirmContactDeletion()
+{
+    char *inputPrompt = "Press 'Y' to delete. [Press any key to ignore]: ";
+    char *errorPrompt = "ERROR - Please enter exactly one character\n";
+
+    return readChar(inputPrompt, "", "yY", 2, 1);
+}
+
+char requestExitListContacts()
+{
+    char *inputPrompt = "Press: [q] | Cancel: ";
+    char *errorPrompt = "ERROR - Please enter a valid option\n";
+
+    return readChar(inputPrompt, errorPrompt, "qQ", 2, 0);
+}
+
+char requestSaveConfirmation()
+{
+    char *inputPrompt = "Done. Press any key to continue: ";
+    char *errorPrompt = "ERROR - Please enter exactly one character\n";
+
+    return readChar(inputPrompt, errorPrompt, "", 0, 1);
+}
+
+char requestSaveOnExit()
+{
+    char *inputPrompt = "Enter 'N' to Ignore and 'Y' to Save: ";
+    char *errorPrompt = "ERROR - Please enter a valid option\n";
+
+    return readChar(inputPrompt, errorPrompt, "nNyY", 4, 0);
 }
 
 int readPositiveInteger(char *inputPrompt, char *errorPrompt, int minimumValue, int maximumValue)
@@ -333,18 +393,71 @@ MenuFeatures requestMainMenuInput()
     return readPositiveInteger(inputPrompt, errorPrompt, 0, 6);
 }
 
-MenuOptions requestAddContactMenuInput()
+MenuOptions requestFourOptionMenuInput()
 {
     char *inputPrompt = "Please select an option: ";
     char *errorPrompt = "ERROR - Please enter a value between 0 and 3\n";
 
     return readPositiveInteger(inputPrompt, errorPrompt, 0, 3);
 }
-/*
+
+MenuOptions requestFiveOptionMenuInput()
+{
+    char *inputPrompt = "Please select an option: ";
+    char *errorPrompt = "ERROR - Please select a value between 0 and 4\n";
+
+    return readPositiveInteger(inputPrompt, errorPrompt, 0, 4);
+}
+
+int requestPhoneNumberIndex()
+{
+    char *inputPrompt = "Enter Phone Number index to be changed [Max 5]: ";
+    char *errorPrompt = "ERROR - Please enter a value between 1 and 5\n";
+
+    return readPositiveInteger(inputPrompt, errorPrompt, 1, 5);
+}
+
+int requestEmailIndex()
+{
+    char *inputPrompt = "Enter Email ID index to be changed [Max 5]: ";
+    char *errorPrompt = "ERROR - Please enter a value between 1 and 5\n";
+
+    return readPositiveInteger(inputPrompt, errorPrompt, 1, 5);
+}
+
+int requestSerialNumber(int numberOfContacts, Modes requestPurpose)
+{
+    char inputPromptBuffer[300];
+    char errorPromptBuffer[300];
+    sprintf(errorPromptBuffer, "%s%d%s", 
+        "ERROR - Please select a value between 1 and ", numberOfContacts, "\n");
+
+    char *inputPrompt = inputPromptBuffer;
+    char *errorPrompt = errorPromptBuffer;
+
+    switch(requestPurpose)
+    {
+        case e_edit:
+            sprintf(inputPromptBuffer, "%s", "Select a Serial Number (S.No) to Edit: ");
+        
+        case e_delete:
+            sprintf(inputPromptBuffer, "%s", "Select a Serial Number (S.No) to Delete: ");
+
+        case e_search:
+            sprintf(inputPromptBuffer, "%s", "Enter a Serial Number (S.No) to search for: ");
+
+        // Undefined behavior
+        case e_add: case e_list:
+            return -1;
+    }
+    return readPositiveInteger(inputPrompt, errorPrompt, 1, numberOfContacts);
+}
+
 int main()
 {
     while(1)
     {
+        /*
         char * name = requestNameInput();
         printf("%s\n", name);
         free(name);
@@ -360,7 +473,8 @@ int main()
 
         printf("%d\n", requestMainMenuInput());
         printf("%d\n", requestAddContactMenuInput());
+        */
+       printf("%d\n", requestSerialNumber(5, e_edit));
     }
     return 0;
 }
-*/
