@@ -668,11 +668,11 @@ Status delete_person(AddressBook *address_book, int si_no)
 			}
 			
 			// delete last item info
-			cI->si_no = -1;
-			strcpy(cI->name[0], "empty name");
+			last->si_no = -1;
+			strcpy(last->name[0], "empty name");
 			for (int i = 0; i < PHONE_NUMBER_COUNT; ++i) {
-				strcpy(cI->phone_numbers[i], "empty phone");
-				strcpy(cI->email_addresses[i], "empty email");
+				strcpy(last->phone_numbers[i], "empty phone");
+				strcpy(last->email_addresses[i], "empty email");
 			}
 
 		}
