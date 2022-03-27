@@ -461,7 +461,6 @@ Status edit_contact(AddressBook *address_book){
 Status edit_person(AddressBook *address_book, int si_no) {
 	/**
 	 * @brief display the menu to edit contact
-	 * 
 	 */
 	char temp[10];
 	sprintf(temp, "%d", si_no);
@@ -533,6 +532,151 @@ Status edit_person(AddressBook *address_book, int si_no) {
 Status delete_contact(AddressBook *address_book)
 {
 	/* Add the functionality for delete contacts here */
+	menu_header("Search Contact to Delete by:\n");
+
+	// menu
+	printf("0. Back\n");
+	printf("1. Name\n");
+	printf("2. Phone No\n");
+	printf("3. Email ID\n");
+	printf("4. Serial No\n\n");
+
+	// read input
+	int option;
+	option = get_option(NUM, "Please select an option: ");
+
+	char userInput[NAME_LEN];
+	Fields field;
+	switch (option)
+	{
+		case e_first_opt: // back
+			break;
+		case e_second_opt: // name
+			printf("Enter the Name: ");
+			scanf("%s", userInput);
+			field = e_name;
+			break;
+		case e_third_opt: // phone
+			printf("Enter the Phone Number: ");
+			scanf("%s", userInput);
+			field = e_phone;
+			break;
+		case e_fourth_opt: // email
+			printf("Enter the Email ID: ");
+			scanf("%s", userInput);
+			field = e_email;
+			break;
+		case e_fifth_opt: // serial number
+			printf("Enter the Serial Number: ");
+			scanf("%s", userInput);
+			field = e_si_no;
+			break;
+		default: // bad inputs
+			break;
+	}
+
+	print_header("Search Result:\n");
+	// display all matching result
+	int loop_count = 0;
+	int found_flag = 0;
+	while (loop_count < address_book->count) {
+		int idx = search(userInput, address_book, loop_count, field);
+		if (idx != e_no_match) {
+			loop_count = idx + 1;
+			found_flag = 1;
+			ContactInfo *cI = &(address_book->list[idx]);
+			print_contact(cI);
+		} else if (found_flag == 0) {
+			print_contact(NULL);
+			break;
+		} else {
+			break;
+		}
+	}
+
+	// select or quit
+	option = get_option(CHAR, "Press: [s] = Select, [q] | Cancel: ");
+	switch (option)
+	{
+		case 's':
+			break;
+		case 'q':
+		default:
+			return e_success;
+			break;
+	}
+
+	// select serial number
+	int si_no = get_option(NUM, "Select a Serial Number (S.No) to Delete: "); // todo validate serial number
+
+	// delete person
+	Status ret = delete_person(address_book, si_no);
+
+	return ret;
+}
+
+Status delete_person(AddressBook *address_book, int si_no)
+{
+	/**
+	 * @brief display the menu to edit delete
+	 */
+	char temp[10];
+	sprintf(temp, "%d", si_no);
+	int idx = search(temp, address_book, 0, e_si_no);
+	ContactInfo *cI = &(address_book->list[idx]);
+
+	menu_header("Edit Contact: \n");
+
+	// print menu
+	printf("0. Back\n");
+	printf("1. Name      : %s\n", cI->name[0]);
+	printf("2. Phone No 1: %s\n", cI->phone_numbers[0]);
+	for (int i = 1; i < PHONE_NUMBER_COUNT; ++i) {
+		if (strcmp(cI->phone_numbers[i], "") != 0)
+			printf("            %d: %s\n", i + 1, cI->phone_numbers[i]);
+	}
+	printf("3. Email ID 1: %s\n", cI->email_addresses[0]);
+	for (int i = 1; i < EMAIL_ID_COUNT; ++i) {
+		if (strcmp(cI->email_addresses[i], "") != 0)
+			printf("            %d: %s\n", i + 1, cI->email_addresses[i]);
+	}
+	printf("\n");
+
+	// select option
+	int option = get_option(CHAR, "Enter 'Y' to delete. [Press and key to ignore]: ");
+	
+	// delete person from contact, move other people up
+	if (option == 'Y')
+	{
+		address_book->count -= 1;
+		if (idx < address_book->count) // delete last item
+		{
+			cI->si_no = -1;
+			strcpy(cI->name[0], "empty name");
+			for (int i = 0; i < PHONE_NUMBER_COUNT; ++i) {
+				strcpy(cI->phone_numbers[i], "empty phone");
+				strcpy(cI->email_addresses[i], "empty email");
+			}
+
+		} else { // replace the deleted index with last
+			ContactInfo *last = &(address_book->list[address_book->count]);
+			// replace idx with contactinfo of last item
+			strcpy(cI->name[0], last->name[0]);
+			for (int i = 0; i < PHONE_NUMBER_COUNT; ++i) {
+				strcpy(cI->phone_numbers[i], last->phone_numbers[i]);
+				strcpy(cI->email_addresses[i], last->phone_numbers[i]);
+			}
+			
+			// delete last item info
+			cI->si_no = -1;
+			strcpy(cI->name[0], "empty name");
+			for (int i = 0; i < PHONE_NUMBER_COUNT; ++i) {
+				strcpy(cI->phone_numbers[i], "empty phone");
+				strcpy(cI->email_addresses[i], "empty email");
+			}
+
+		}
+	}
 
 	return e_success;
 }
@@ -556,7 +700,7 @@ Status list_contact(AddressBook *address_book, int idx)
 		return e_success;
 	} else { // list first ContactList
 		print_contact(&(address_book->list[idx]));
-		if (newIndex == 0) {
+		if (idx == 0) {
 			strcpy(newMsg, "Press: [n]=next, [q] | Cancel: ");
 		} else {
 			strcpy(newMsg, "Press: [n]=next, [p]=previous, [q] | Cancel: ");
