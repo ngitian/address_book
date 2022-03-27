@@ -19,7 +19,8 @@ Status edit_contact(AddressBook *address_book);
 Status delete_contact(AddressBook *address_book);
 
 Status list_contact(AddressBook *address_book, int idx);
-int search(const char *str, AddressBook *address_book, int loop_count, Fields field, const char *msg, Modes mode);
+Status edit_person(AddressBook *address_book, int si_no);
+int search(const char *str, AddressBook *address_book, int loop_count, Fields field);
 void print_header(char *title);
 void print_contact(const ContactInfo* contactInfo);
 
