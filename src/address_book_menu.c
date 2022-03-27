@@ -643,7 +643,7 @@ Status delete_person(AddressBook *address_book, int si_no)
 	printf("\n");
 
 	// select option
-	int option = get_option(CHAR, "Enter 'Y' to delete. [Press and key to ignore]: ");
+	int option = get_option(CHAR, "Enter 'Y' to delete. [Press any key to ignore]: ");
 	
 	// delete person from contact, move other people up
 	if (option == 'Y')
