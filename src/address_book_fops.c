@@ -45,9 +45,12 @@ Status load_file(AddressBook *address_book)
 
 		address_book->fp = fopen(DEFAULT_FILE, "r");
 
+		// todo csv file input validation 
+
 		// read first line, number of entries
 		int size;
 		fscanf(address_book->fp, "%d\n", &size);
+		printf("%d\n\n", size);
 		address_book->count = size;
 		
 		// read, process and load content
@@ -55,7 +58,6 @@ Status load_file(AddressBook *address_book)
 			parseCSVRow(address_book, row); 
 		}
 		
-		// todo csv file input validation
 	}
 	else // file doesn't exists
 	{
@@ -65,6 +67,7 @@ Status load_file(AddressBook *address_book)
 			return e_fail;
 		}
 		address_book->count = 0;
+		fprintf(address_book->fp, "0");
 	}
 
 	fclose(address_book->fp);
