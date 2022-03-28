@@ -70,7 +70,7 @@ void menu_header(const char *str)
 {
 	fflush(stdout);
 
-	// system("clear");
+	system("clear");
 
 	printf("#######  Address Book  #######\n");
 	if (str[0] != '\0')
@@ -435,10 +435,10 @@ Status edit_contact(AddressBook *address_book){
 	printf("4. Serial No\n\n");
 
 	// read input
-	int option;
-	option = get_option(NUM, "Please select an option: ");
+	MenuOptions option = requestFiveOptionMenuInput();
 
 	char userInput[NAME_LEN];
+	char *dynamicString;
 	int serialNumberInput = 0;
 	Fields field;
 	switch (option)
@@ -446,23 +446,28 @@ Status edit_contact(AddressBook *address_book){
 		case e_first_opt: // back
 			break;
 		case e_second_opt: // name
-			printf("Enter the Name: ");
-			scanf("%s", userInput);
+			dynamicString = requestNameInput();
+			for(int i = 0; i < NAME_LEN; i++)
+				userInput[i] = dynamicString[i];
+			free(dynamicString);
 			field = e_name;
 			break;
 		case e_third_opt: // phone
-			printf("Enter the Phone Number: ");
-			scanf("%s", userInput);
+			dynamicString = requestPhoneNumberInput(-1, e_search);
+			for(int i = 0; i < NAME_LEN; i++)
+				userInput[i] = dynamicString[i];
+			free(dynamicString);
 			field = e_phone;
 			break;
 		case e_fourth_opt: // email
-			printf("Enter the Email ID: ");
-			scanf("%s", userInput);
+			dynamicString = requestEmailAddressInput(-1, e_search);
+			for(int i = 0; i < NAME_LEN; i++)
+				userInput[i] = dynamicString[i];
+			free(dynamicString);
 			field = e_email;
 			break;
 		case e_fifth_opt: // serial number
-			printf("Enter the Serial Number: ");
-			scanf("%s", userInput);
+			serialNumberInput = requestSerialNumber(address_book->count, e_search);
 			field = e_si_no;
 			break;
 		default: // bad inputs
@@ -489,7 +494,7 @@ Status edit_contact(AddressBook *address_book){
 	}
 
 	// select or quit
-	option = get_option(CHAR, "Press: [s] = Select, [q] | Cancel: ");
+	option = requestSelectOrQuitEditDeleteContactSearch();
 	switch (option)
 	{
 		case 's':
@@ -501,7 +506,7 @@ Status edit_contact(AddressBook *address_book){
 	}
 
 	// select serial number
-	int si_no = get_option(NUM, "Select a Serial Number (S.No) to Edit: "); // todo validate serial number
+	int si_no = requestSerialNumber(address_book->count, e_edit);
 
 	// edit person
 	Status ret = edit_person(address_book, si_no);
@@ -538,38 +543,33 @@ Status edit_person(AddressBook *address_book, int si_no) {
 		printf("\n");
 
 		// select option
-		int option = get_option(NUM, "Please select an option: ");
+		MenuOptions option = requestFourOptionMenuInput();
 		char userInput[NAME_LEN];
+		char *dynamicString;
 		switch (option)
 		{
 			case e_first_opt: // back
 				running = 0;
 				break;
 			case e_second_opt: // name
-				printf("Enter Name [Can NOT be empty]: ");
-				scanf("%s", userInput);
-
-				// todo name validation
-				strcpy(cI->name[0], userInput);
-				
+				dynamicString = requestNameInput();
+				for(int i = 0; i < NAME_LEN; i++)
+					cI->name[0][i] = dynamicString[i];
+				free(dynamicString);
 				break;
 			case e_third_opt: // phone
-				printf("Enter Phone Number index to be changed [max 5]: ");
-				scanf("%d", &idx);
-				printf("Enter Phone Number %d: [Just enter removes the entry]: ", idx);
-				scanf("%s", userInput);
-
-				// phone and index validation
-				strcpy(cI->phone_numbers[idx-1], userInput);
+				idx = requestPhoneNumberIndex();
+				dynamicString = requestPhoneNumberInput(idx, e_edit);
+				for(int i = 0; i < NAME_LEN; i++)
+					cI->phone_numbers[idx-1][i] = dynamicString[i];
+				free(dynamicString);
 				break;
 			case e_fourth_opt: // email
-				printf("Enter Email ID index to be changed [max 5]: ");
-				scanf("%d", &idx);
-				printf("Enter Email Number %d: [Just enter removes the entry]: ", idx);
-				scanf("%s", userInput);
-
-				// email and index validation
-				strcpy(cI->email_addresses[idx-1], userInput);
+				idx = requestEmailIndex();
+				dynamicString = requestEmailAddressInput(idx, e_edit);
+				for(int i = 0; i < NAME_LEN; i++)
+					cI->email_addresses[idx-1][i] = dynamicString[i];
+				free(dynamicString);
 				break;
 			default:
 				break;
