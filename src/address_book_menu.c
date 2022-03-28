@@ -50,16 +50,16 @@ Status save_prompt(AddressBook *address_book)
 	{
 		main_menu();
 
-		option = get_option(CHAR, "\rEnter 'N' to Ignore and 'Y' to Save: ");
+		option = requestSaveOnExit();
 
-		if (option == 'Y')
+		if (option == 'y')
 		{
 			save_file(address_book);
 			printf("Exiting. Data saved in %s\n", DEFAULT_FILE);
 
 			break;
 		}
-	} while (option != 'N');
+	} while (option != 'n');
 
 	return e_success;
 }
@@ -127,6 +127,7 @@ Status menu(AddressBook *address_book)
 				list_contact(address_book, 0);
 				break;
 			case e_save:
+				requestSaveConfirmation();
 				save_file(address_book);
 				load_file(address_book); 
 				break;
@@ -588,10 +589,10 @@ Status delete_contact(AddressBook *address_book)
 	printf("4. Serial No\n\n");
 
 	// read input
-	int option;
-	option = get_option(NUM, "Please select an option: ");
+	MenuOptions option = requestFiveOptionMenuInput();
 
 	char userInput[NAME_LEN];
+	char *dynamicString;
 	int serialNumberInput = 0;
 	Fields field;
 	switch (option)
@@ -599,23 +600,28 @@ Status delete_contact(AddressBook *address_book)
 		case e_first_opt: // back
 			break;
 		case e_second_opt: // name
-			printf("Enter the Name: ");
-			scanf("%s", userInput);
+			dynamicString = requestNameInput();
+			for(int i = 0; i < NAME_LEN; i++)
+				userInput[i] = dynamicString[i];
+			free(dynamicString);
 			field = e_name;
 			break;
 		case e_third_opt: // phone
-			printf("Enter the Phone Number: ");
-			scanf("%s", userInput);
+			dynamicString = requestPhoneNumberInput(-1, e_search);
+			for(int i = 0; i < NAME_LEN; i++)
+				userInput[i] = dynamicString[i];
+			free(dynamicString);
 			field = e_phone;
 			break;
 		case e_fourth_opt: // email
-			printf("Enter the Email ID: ");
-			scanf("%s", userInput);
+			dynamicString = requestEmailAddressInput(-1, e_search);
+			for(int i = 0; i < NAME_LEN; i++)
+				userInput[i] = dynamicString[i];
+			free(dynamicString);
 			field = e_email;
 			break;
 		case e_fifth_opt: // serial number
-			printf("Enter the Serial Number: ");
-			scanf("%s", userInput);
+			serialNumberInput = requestSerialNumber(address_book->count, e_search);
 			field = e_si_no;
 			break;
 		default: // bad inputs
@@ -642,7 +648,7 @@ Status delete_contact(AddressBook *address_book)
 	}
 
 	// select or quit
-	option = get_option(CHAR, "Press: [s] = Select, [q] | Cancel: ");
+	option = requestSelectOrQuitEditDeleteContactSearch();
 	switch (option)
 	{
 		case 's':
@@ -654,7 +660,7 @@ Status delete_contact(AddressBook *address_book)
 	}
 
 	// select serial number
-	int si_no = get_option(NUM, "Select a Serial Number (S.No) to Delete: "); 
+	int si_no = requestSerialNumber(address_book->count, e_delete);
 
 	// delete person
 	Status ret = delete_person(address_book, si_no);
@@ -690,10 +696,10 @@ Status delete_person(AddressBook *address_book, int si_no)
 	printf("\n");
 
 	// select option
-	int option = get_option(CHAR, "Enter 'Y' to delete. [Press any key to ignore]: ");
+	int option = requestConfirmContactDeletion();
 	
 	// delete person from contact, move other people up
-	if (option == 'Y')
+	if (option == 'y')
 	{
 		address_book->count -= 1;
 		if (idx == address_book->count) // delete last item

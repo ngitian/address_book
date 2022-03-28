@@ -53,6 +53,7 @@ char requestConfirmContactDeletion();
 
 // Use to request the user exists the List Contact results screen
 // This function will only return 'q' --> return to main menu.
+// UNUSED DUE TO PAGINATOR
 char requestExitListContacts();
 
 // Use to obtain user confirmation that the Save option was executed.
