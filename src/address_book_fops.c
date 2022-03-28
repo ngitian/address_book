@@ -54,7 +54,10 @@ Status load_file(AddressBook *address_book)
 		
 		// read, process and load content
 		for (int row = 0; row < size; ++row) {
-			parseCSVRow(address_book, row); 
+			Status ret = parseCSVRow(address_book, row);
+			if (ret == e_fail) {
+				return e_fail;
+			}
 		}
 		
 	}
@@ -109,7 +112,7 @@ Status save_file(AddressBook *address_book)
 	return e_success;
 }
 
-void parseCSVRow(AddressBook *address_book, int row) {
+Status parseCSVRow(AddressBook *address_book, int row) {
 
 	// declare variables
 	char nameInput[NAME_LEN][NAME_COUNT];
@@ -169,6 +172,10 @@ void parseCSVRow(AddressBook *address_book, int row) {
 			strncat(tmp, &c, 1);
 		}
 	}
+	if (fieldCounter != NAME_COUNT + PHONE_NUMBER_COUNT + EMAIL_ID_COUNT) {
+		printf("Invalid CSV format\n");
+		return e_fail;
+	}
 
 	// store input in address_book's list of ContactInfo
 	address_book->list[row].si_no = row + 1;
@@ -185,4 +192,5 @@ void parseCSVRow(AddressBook *address_book, int row) {
 	strcpy(address_book->list[row].email_addresses[3], emailsInput[3]);
 	strcpy(address_book->list[row].email_addresses[4], emailsInput[4]);
 
+	return e_success;
 }
