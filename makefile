@@ -5,11 +5,11 @@ CC=gcc
 all: program
 
 program: src/main.c src/address_book_fops.c src/address_book_menu.c src/Requests.c
-	$(CC) src/main.c src/address_book_fops.c src/address_book_menu.c src/Requests.c -o bin/main
+	$(CC) src/main.c src/address_book_fops.c src/address_book_menu.c src/Requests.c -lm -o bin/main
 	./bin/main
 
 debug: src/main.c src/address_book_fops.c src/address_book_menu.c src/Requests.c
-	$(CC) src/main.c src/address_book_fops.c src/address_book_menu.c src/Requests.c -g -O0 -o bin/d_main
+	$(CC) src/main.c src/address_book_fops.c src/address_book_menu.c src/Requests.c -lm -g -O0 -o bin/d_main
 	gdb bin/d_main
 
 clear: 
