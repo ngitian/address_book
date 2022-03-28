@@ -61,8 +61,6 @@ Status save_prompt(AddressBook *address_book)
 		}
 	} while (option != 'N');
 
-	free(address_book->list);
-
 	return e_success;
 }
 
