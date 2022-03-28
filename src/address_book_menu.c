@@ -69,7 +69,7 @@ void menu_header(const char *str)
 {
 	fflush(stdout);
 
-	system("clear");
+	// system("clear");
 
 	printf("#######  Address Book  #######\n");
 	if (str[0] != '\0')
@@ -168,16 +168,22 @@ Status add_contacts(AddressBook *address_book)
 		if (nameFlag) {
 			printf("%s", nameInput[0]);
 		}
-		printf("\n2. Phone No %d : ", phonesInputCounter + 1);
+		printf("\n2. Phone No 1 : ");
 		if (phoneFlag) {
-			for (int i = 0; i < phonesInputCounter; ++i) {
-				printf("%s ", phonesInput[i]);
+			printf("%s", phonesInput[0]);
+			for (int i = 1; i < phonesInputCounter; ++i) {
+				if (strcmp(phonesInput[i], "") != 0) {
+					printf("\n            %d : %s", i+1, phonesInput[i]);
+				}
 			}
 		}
-		printf("\n3. Email ID %d : ", emailsInputCounter + 1);
+		printf("\n3. Email ID 1 : ");
 		if (emailFlag) {
-			for (int i = 0; i < emailsInputCounter; ++i) {
-				printf("%s ", emailsInput[i]);
+			printf("%s", emailsInput[0]);
+			for (int i = 1; i < emailsInputCounter; ++i) {
+				if (strcmp(emailsInput[i], "") != 0) {
+					printf("\n            %d : %s", i+1, emailsInput[i]);
+				}
 			}
 		}
 		printf("\n");
