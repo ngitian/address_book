@@ -466,12 +466,15 @@ int requestSerialNumber(int numberOfContacts, Modes requestPurpose)
     {
         case e_edit:
             sprintf(inputPromptBuffer, "%s", "Select a Serial Number (S.No) to Edit: ");
+            break;
         
         case e_delete:
             sprintf(inputPromptBuffer, "%s", "Select a Serial Number (S.No) to Delete: ");
+            break;
 
         case e_search:
             sprintf(inputPromptBuffer, "%s", "Enter a Serial Number (S.No) to search for: ");
+            break;
 
         // Undefined behavior
         case e_add: case e_list:
