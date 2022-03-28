@@ -45,7 +45,15 @@ Status load_file(AddressBook *address_book)
 
 		address_book->fp = fopen(DEFAULT_FILE, "r");
 
-		// todo csv file input validation 
+		// check if file is empty
+		struct stat st;
+		if (stat(DEFAULT_FILE, &st) != 0) {
+			return EXIT_FAILURE;
+		}
+		if (st.st_size == 0) {
+			printf("Invalid empty file\n");
+			return e_fail;
+		}
 
 		// read first line, number of entries
 		int size;
