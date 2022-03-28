@@ -203,7 +203,7 @@ char *requestPhoneNumberInput(int phoneNumberIndex, Modes requestPurpose)
             break;
 
         case e_search:
-            sprintf(inputPromptBuffer, "%s%d%s", "Enter the Phone Number to search for: ");
+            sprintf(inputPromptBuffer, "%s", "Enter the Phone Number to search for: ");
             break;
 
         // UNDEFINED BEHAVIOR
