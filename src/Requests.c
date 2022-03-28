@@ -203,7 +203,7 @@ char *requestPhoneNumberInput(int phoneNumberIndex, Modes requestPurpose)
             break;
 
         case e_search:
-            sprintf(inputPromptBuffer, "%s%d%s", "Enter the Phone Number to search for: ");
+            sprintf(inputPromptBuffer, "%s", "Enter the Phone Number to search for: ");
             break;
 
         // UNDEFINED BEHAVIOR
@@ -451,30 +451,4 @@ int requestSerialNumber(int numberOfContacts, Modes requestPurpose)
             return -1;
     }
     return readPositiveInteger(inputPrompt, errorPrompt, 1, numberOfContacts);
-}
-
-int main()
-{
-    while(1)
-    {
-        /*
-        char * name = requestNameInput();
-        printf("%s\n", name);
-        free(name);
-
-        
-        char * number = requestPhoneNumberInput(1, e_add);
-        printf("%s\n", number);
-        free(number);
-
-        char * email = requestEmailAddressInput(1, e_add);
-        printf("%s\n", email);
-        free(email);
-
-        printf("%d\n", requestMainMenuInput());
-        printf("%d\n", requestAddContactMenuInput());
-        */
-       printf("%d\n", requestSerialNumber(5, e_edit));
-    }
-    return 0;
 }
