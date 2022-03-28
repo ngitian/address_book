@@ -65,6 +65,9 @@ char requestSaveConfirmation();
 // Either way, exit the program.
 char requestSaveOnExit();
 
+// Be very careful using this
+char readChar(char *inputPrompt, char *errorPrompt, char *validInputs, int numberValidInputs, int returnNullOnBadValue);
+
 // Use to request the user select an option in the Main Menu.
 // Returns a MenuFeatures enum (an integer between 0 and 6)
 MenuFeatures requestMainMenuInput();

@@ -103,7 +103,6 @@ Status menu(AddressBook *address_book)
 
 		option = requestMainMenuInput();
 
-		// Todo - garbage first value?
 		if ((address_book-> count == 0) && (option != e_add_contact) && (option != e_exit))
 		{
 			requestConfirmNoContactsExist();
@@ -572,9 +571,7 @@ Status edit_person(AddressBook *address_book, int si_no) {
 			default:
 				break;
 		}
-
 	}
-
 	return e_success;
 }
 
@@ -740,7 +737,6 @@ Status list_contact(AddressBook *address_book, int idx)
 
 	char option;
 	int newIndex;
-	char newMsg[100];
 
 	// if list empty
 	if (address_book->count == 0)
@@ -751,43 +747,30 @@ Status list_contact(AddressBook *address_book, int idx)
 	} else { // list first ContactList
 		print_contact(&(address_book->list[idx]));
 		if (address_book->count == 1) {
-			strcpy(newMsg, "Press: [q] | Cancel: ");
+			option = readChar("Press: [q] | Cancel: ", "ERROR: Please enter a valid option\n", "qQ", 2, 0);
 		} else if (idx > 0 && idx < address_book->count - 1) {
-			strcpy(newMsg, "Press: [n] = Next, [p] = Previous, [q] | Cancel: ");
+			option = readChar("Press: [n] = Next, [p] = Previous, [q] | Cancel: ", "ERROR: please enter a valid option\n", "nNpPqQ", 6, 0);
 		} else if (idx == address_book->count - 1) {
-			strcpy(newMsg, "Press: [p] = Previous, [q] | Cancel: ");
+			option = readChar("Press: [p] = Previous, [q] | Cancel: ", "ERROR: Please enter a valid option\n", "pPqQ", 4, 0);
 		} else {
-			strcpy(newMsg, "Press: [n] = Next, [q] | Cancel: ");
+			option = readChar("Press: [n] = Next, [q] | Cancel: ", "ERROR: Please enter a valid option\n", "nNqQ", 4, 0);
 		}
 	}
 
 	// user input, (n)ext, (p)revious, (q)uit
-	option = get_option(CHAR, newMsg);
 	switch (option)
 	{
 		case 'n':
 			newIndex = idx + 1;
-			if (newIndex == address_book->count - 1) {
-				strcpy(newMsg, "Press: [p]=previous, [q] | Cancel: ");
-			} else {
-				strcpy(newMsg, "Press: [n]=next, [p]=previous, [q] | Cancel: ");
-			}
 			list_contact(address_book, newIndex);
 			break;
 		case 'p':
 			newIndex = idx - 1;
-			if (newIndex == 0) {
-				strcpy(newMsg, "Press: [n]=next, [q] | Cancel: ");
-			} else {
-				strcpy(newMsg, "Press: [n]=next, [p]=previous, [q] | Cancel: ");
-			}
 			list_contact(address_book, newIndex);
-
 			break;
 		case 'q':
 			break;
 		default:
-			// todo catch invalid input other than n, p, q
 			break;
 
 	}
