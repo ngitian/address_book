@@ -103,7 +103,6 @@ Status menu(AddressBook *address_book)
 
 		option = requestMainMenuInput();
 
-		// Todo - garbage first value?
 		if ((address_book-> count == 0) && (option != e_add_contact) && (option != e_exit))
 		{
 			requestConfirmNoContactsExist();
@@ -129,7 +128,7 @@ Status menu(AddressBook *address_book)
 				break;
 			case e_save:
 				save_file(address_book);
-				load_file(address_book); // todo reload it right after saving to continue working on address book?
+				load_file(address_book); 
 				break;
 			case e_exit:
 				break;
@@ -657,7 +656,7 @@ Status delete_contact(AddressBook *address_book)
 	}
 
 	// select serial number
-	int si_no = get_option(NUM, "Select a Serial Number (S.No) to Delete: "); // todo validate serial number
+	int si_no = get_option(NUM, "Select a Serial Number (S.No) to Delete: "); 
 
 	// delete person
 	Status ret = delete_person(address_book, si_no);
@@ -787,7 +786,6 @@ Status list_contact(AddressBook *address_book, int idx)
 		case 'q':
 			break;
 		default:
-			// todo catch invalid input other than n, p, q
 			break;
 
 	}
