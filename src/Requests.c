@@ -18,7 +18,7 @@ int readName(char *inputString)
     char currentChar;
     int i = 0;
 
-    for(i = 0; i < NAME_LEN; i++)
+    for(i = 0; i < NAME_LEN - 1; i++)
     {
         currentChar = getchar();
         switch(currentChar)
@@ -58,7 +58,7 @@ int readPhoneNumber(char *inputString)
     char currentChar;
     int i = 0;
 
-    for(i = 0; i < NUMBER_LEN; i++)
+    for(i = 0; i < NUMBER_LEN - 1; i++)
     {
         currentChar = getchar();
         switch(currentChar)
@@ -91,7 +91,7 @@ int readEmailAddress(char *inputString)
     char currentChar;
     int i = 0, hasAtSymbol = 0, hasPeriodInDomain = 0;
 
-    for(i = 0; i < EMAIL_ID_LEN; i++)
+    for(i = 0; i < EMAIL_ID_LEN - 1; i++)
     {
         currentChar = getchar();  
         switch(currentChar)
@@ -174,11 +174,11 @@ char *requestNameInput()
 {
     char *inputPrompt = "Enter the Name: ";
     char *errorPrompt = "ERROR - Improper Input - Names Must:\n"
-        "> Range from 1-32 characters\n"
+        "> Range from 1-32 characters, including the null terminal\n"
         "> Consist only of letters, spaces and periods.\n"
         "Please try again.\n";
 
-    return readString(inputPrompt, errorPrompt, NAME_LEN, readName);
+    return readString(inputPrompt, errorPrompt, NAME_LEN - 1, readName);
 }
 
 char *requestPhoneNumberInput(int phoneNumberIndex, Modes requestPurpose)
@@ -186,7 +186,7 @@ char *requestPhoneNumberInput(int phoneNumberIndex, Modes requestPurpose)
     char inputPromptBuffer[300];
     char *inputPrompt = inputPromptBuffer;
     char *errorPrompt = "ERROR - Improper Input - Phone Numbers Must:\n"
-        "> Range from 0-32 characters [Inputting nothing cancels your choice].\n"
+        "> Range from 0-32 characters, including the null terminal [Inputting nothing cancels your choice].\n"
         "> Consist only of numbers.\n"
         "Please try again.\n";
 
@@ -211,7 +211,7 @@ char *requestPhoneNumberInput(int phoneNumberIndex, Modes requestPurpose)
         return NULL;
     }
 
-    return readString(inputPrompt, errorPrompt, NUMBER_LEN, readPhoneNumber);
+    return readString(inputPrompt, errorPrompt, NUMBER_LEN - 1, readPhoneNumber);
 }
 
 char *requestEmailAddressInput(int emailAddressIndex, Modes requestPurpose)
@@ -219,7 +219,7 @@ char *requestEmailAddressInput(int emailAddressIndex, Modes requestPurpose)
     char inputPromptBuffer[300];
     char *inputPrompt = inputPromptBuffer;
     char *errorPrompt = "ERROR - Improper Input - Email Addresses Must:\n"
-        "> Range from 0-32 characters [Inputting nothing cancels your choice].\n"
+        "> Range from 0-32 characters, including the null terminal [Inputting nothing cancels your choice].\n"
         "> Contain exactly one '@' between the email username and domain name.\n"
         "> Have at least one period in the domain name.\n"
         "> The usage of certain special characters may be restricted.\n"
@@ -245,7 +245,7 @@ char *requestEmailAddressInput(int emailAddressIndex, Modes requestPurpose)
         case e_list: case e_delete:
         return NULL;
     }
-    return readString(inputPrompt, errorPrompt, EMAIL_ID_LEN, readEmailAddress);
+    return readString(inputPrompt, errorPrompt, EMAIL_ID_LEN - 1, readEmailAddress);
 }
 
 char readChar(char *inputPrompt, char *errorPrompt, char *validInputs, int numberValidInputs, int returnNullOnBadValue)
@@ -263,7 +263,10 @@ char readChar(char *inputPrompt, char *errorPrompt, char *validInputs, int numbe
     {
         if(flushBuffer() > 0)
         {
-            goto badInput;
+            if(returnNullOnBadValue == 1)
+                return '\0';
+            else
+                goto badInput;
         }
             
     }
@@ -286,6 +289,30 @@ char readChar(char *inputPrompt, char *errorPrompt, char *validInputs, int numbe
     badInput:
     printf("%s", errorPrompt);
     goto askForInput;
+}
+
+char requestConfirmNoContactsExist()
+{
+    char *inputPrompt = "No entries found!. Would you like to add? Use Add Contacts. ";
+    char *errorPrompt = "An error happened";
+
+    return readChar(inputPrompt, errorPrompt, "", 0, 1);
+}
+
+char requestConfirmNoMorePhoneNumbers()
+{    
+    char *inputPrompt = "You cannot enter anymore phone numbers! ";
+    char *errorPrompt = "An error happened";
+
+    return readChar(inputPrompt, errorPrompt, "", 0, 1);
+}
+
+char requestConfirmNoMoreEmails()
+{    
+    char *inputPrompt = "You cannot enter anymore emails! ";
+    char *errorPrompt = "An error happened";
+
+    return readChar(inputPrompt, errorPrompt, "", 0, 1);
 }
 
 char requestExitSearchContactDisplay()

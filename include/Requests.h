@@ -24,6 +24,13 @@ The values returned by the following functions are NOT
 dynamically allocated.
 */
 
+// Use to make user acknowledge that no contacts exist
+// '\0' will always return
+char requestConfirmNoContactsExist();
+
+char requestConfirmNoMorePhoneNumbers();
+char requestConfirmNoMoreEmails();
+
 // Use to request the user exits the Search Contact Results screen
 // If 'q' is returned --> Return to main menu
 // If 's' is returned --> Return to search menu

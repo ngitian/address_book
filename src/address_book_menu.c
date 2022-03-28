@@ -11,6 +11,7 @@
 #include "../include/address_book_menu.h"
 #include "../include/address_book_fops.h"
 #include "../include/address_book.h"
+#include "../include/Requests.h"
 
 int get_option(int type, const char *msg)
 {
@@ -90,32 +91,30 @@ void main_menu(void)
 	printf("5. List Contacts\n");
 	printf("6. Save\n");
 	printf("\n");
-	printf("Please select an option: ");
 }
 
 Status menu(AddressBook *address_book)
 {
 	ContactInfo backup;
 	Status ret;
-	int option;
+	MenuOptions option;
 
 	do
 	{
 		main_menu();
 
-		option = get_option(NUM, "");
+		option = requestMainMenuInput();
 
-		if ((address_book-> count == 0) && (option != e_add_contact))
+		// Todo - garbage first value?
+		if ((address_book-> count == 0) && (option != e_add_contact) && (option != e_exit))
 		{
-			get_option(NONE, "No entries found!!. Would you like to add? Use Add Contacts.");
-
+			requestConfirmNoContactsExist();
 			continue;
 		}
 
 		switch (option)
 		{
 			case e_add_contact:
-				/* Add your implementation to call add_contacts function here */
 				add_contacts(address_book);
 				break;
 			case e_search_contact:
@@ -130,7 +129,6 @@ Status menu(AddressBook *address_book)
 			case e_list_contacts:
 				list_contact(address_book, 0);
 				break;
-				/* Add your implementation to call list_contacts function here */
 			case e_save:
 				save_file(address_book);
 				load_file(address_book); // todo reload it right after saving to continue working on address book?
@@ -139,7 +137,6 @@ Status menu(AddressBook *address_book)
 				break;
 		}
 	} while (option != e_exit);
-
 	return e_success;
 }
 
@@ -186,12 +183,12 @@ Status add_contacts(AddressBook *address_book)
 				}
 			}
 		}
-		printf("\n");
+		printf("\n\n");
 
 
 		// menu input
-		int option;
-		option = get_option(NUM, "\nPlease select an option: ");
+		MenuOptions option = requestFourOptionMenuInput();
+		char * dynamicString;
 
 		switch (option)
 		{
@@ -219,39 +216,70 @@ Status add_contacts(AddressBook *address_book)
 				running = 0;
 				break;
 			case e_second_opt: // add name, only 1 name
-				printf("Enter the name: ");
-				scanf("%s", nameInput[0]);
+				//printf("Enter the name: ");
+				//scanf("%s", nameInput[0]);
+				dynamicString = requestNameInput();
+				for(int i = 0; i < NAME_LEN; i++)
+					nameInput[0][i] = dynamicString[i];
+				free(dynamicString);
 
-				// todo input validation
 				nameFlag = 1;
 				break;
 			case e_third_opt: // add phone number, only 5
-				printf("Enter Phone Number %d: [Please reenter the same option for additional Phone Number]: ", phonesInputCounter + 1);
-				scanf("%s", phonesInput[phonesInputCounter]);
+				if(phonesInputCounter == 5)
+				{
+					requestConfirmNoMorePhoneNumbers();
+					break;
+				}
+				//printf("Enter Phone Number %d: [Please reenter the same option for additional Phone Number]: ", phonesInputCounter + 1);
+				//scanf("%s", phonesInput[phonesInputCounter]);
 
-				// todo input validation
+				dynamicString = requestPhoneNumberInput(phonesInputCounter + 1, e_add);
+				if(dynamicString[0] == '\0') // Empty
+				{
+					free(dynamicString);
+					break;
+				}
+				for(int i = 0; i < NUMBER_LEN; i++)
+				{
+					phonesInput[phonesInputCounter][i] = dynamicString[i];
+				}
+				free(dynamicString);
+
+				phonesInputCounter++;
 				phoneFlag = 1;
-				++phonesInputCounter;
 				break;
 			case e_fourth_opt: // add email, only 5
-				printf("Enter Email ID %d: [Please reenter the same option for additional Email ID]: ", emailsInputCounter + 1);
-				scanf("%s", emailsInput[emailsInputCounter]);
+				if(emailsInputCounter == 5)
+				{
+					requestConfirmNoMoreEmails();
+					break;
+				}
+				//printf("Enter Email ID %d: [Please reenter the same option for additional Email ID]: ", emailsInputCounter + 1);
+				//scanf("%s", emailsInput[emailsInputCounter]);
+				dynamicString = requestEmailAddressInput(emailsInputCounter + 1, e_add);
+				if(dynamicString[0] == '\0')
+				{
+					free(dynamicString);
+					break;
+				}
+				for(int i = 0; i < EMAIL_ID_LEN; i++)
+				{
+					emailsInput[emailsInputCounter][i] = dynamicString[i];
+				}
+				free(dynamicString);
 
-				// todo input validation
 				emailFlag = 1;
 				++emailsInputCounter;
 				break;
-			default: // todo bad input
+			default:
 				break;
 		}
 	}
-
-	// todo validation, no ','
-
 	return e_success;
 }
 
-int search(const char *str, AddressBook *address_book, int loop_count, Fields field)
+int search(const char *str, AddressBook *address_book, int loop_count, Fields field, int serialNumber)
 {
 	/**
 	 * @brief search address_book list of ContactInfo based on field
@@ -287,9 +315,9 @@ int search(const char *str, AddressBook *address_book, int loop_count, Fields fi
 			}
 		case e_si_no: // serial number
 			;
-			int si = strtol(str, NULL, 10);
+			//int si = strtol(str, NULL, 10);
 			for (int i = loop_count; i < list_size && found == -1; ++i) {
-				if (address_book->list[i].si_no == si) {
+				if (address_book->list[i].si_no == serialNumber) {
 					found = i;
 				}
 			}
@@ -307,7 +335,7 @@ int search(const char *str, AddressBook *address_book, int loop_count, Fields fi
 
 Status search_contact(AddressBook *address_book)
 {
-	// /* Add the functionality for search contacts here */
+	SEARCH_START:
 
 	menu_header("Search Contact by:\n");
 
@@ -319,9 +347,10 @@ Status search_contact(AddressBook *address_book)
 	printf("4. Serial No\n\n");
 
 	// // read input
-	int option;
-	option = get_option(NUM, "Please select an option: ");
+	MenuOptions option = requestFiveOptionMenuInput();
 
+	char * dynamicString;
+	int serialNumberInput = 0;
 	char userInput[NAME_LEN];
 	Fields field;
 	switch (option)
@@ -330,23 +359,36 @@ Status search_contact(AddressBook *address_book)
 			return e_success;
 			break;
 		case e_second_opt: // name
-			printf("Enter the Name: ");
-			scanf("%s", userInput);
+			//printf("Enter the Name: ");
+			//scanf("%s", userInput);
+			dynamicString = requestNameInput();
+			for(int i = 0; i < NAME_LEN; i++)
+				userInput[i] = dynamicString[i];
+			free(dynamicString);
 			field = e_name;
 			break;
 		case e_third_opt: // phone
-			printf("Enter the Phone Number: ");
-			scanf("%s", userInput);
+			//printf("Enter the Phone Number: ");
+			//scanf("%s", userInput);
+			dynamicString = requestPhoneNumberInput(-1, e_search);
+			for(int i = 0; i < NUMBER_LEN; i++)
+				userInput[i] = dynamicString[i];
+			free(dynamicString);
 			field = e_phone;
 			break;
 		case e_fourth_opt: // email
-			printf("Enter the Email ID: ");
-			scanf("%s", userInput);
+			//printf("Enter the Email ID: ");
+			//scanf("%s", userInput);
+			dynamicString = requestEmailAddressInput(-1, e_search);
+			for(int i = 0; i < EMAIL_ID_LEN; i++)
+				userInput[i] = dynamicString[i];
+			free(dynamicString);
 			field = e_email;
 			break;
 		case e_fifth_opt: // serial number
-			printf("Enter the Serial Number: ");
-			scanf("%s", userInput);
+			//printf("Enter the Serial Number: ");
+			//scanf("%s", userInput);
+			serialNumberInput = requestSerialNumber(address_book-> count, e_search);
 			field = e_si_no;
 			break;
 		default: // bad inputs
@@ -359,7 +401,7 @@ Status search_contact(AddressBook *address_book)
 	int loop_count = 0;
 	int found_flag = 0;
 	while (loop_count < address_book->count) {
-		int idx = search(userInput, address_book, loop_count, field);
+		int idx = search(userInput, address_book, loop_count, field, serialNumberInput);
 		if (idx != e_no_match) {
 			loop_count = idx + 1;
 			found_flag = 1;
@@ -374,7 +416,9 @@ Status search_contact(AddressBook *address_book)
 	}
 
 	// user input to exit
-	option = get_option(CHAR, "Press: [q] | Cancel: ");
+	option = requestExitSearchContactDisplay();
+	if(option == 's')
+		goto SEARCH_START;
 	
 	return e_success;
 }
@@ -395,6 +439,7 @@ Status edit_contact(AddressBook *address_book){
 	option = get_option(NUM, "Please select an option: ");
 
 	char userInput[NAME_LEN];
+	int serialNumberInput = 0;
 	Fields field;
 	switch (option)
 	{
@@ -429,7 +474,7 @@ Status edit_contact(AddressBook *address_book){
 	int loop_count = 0;
 	int found_flag = 0;
 	while (loop_count < address_book->count) {
-		int idx = search(userInput, address_book, loop_count, field);
+		int idx = search(userInput, address_book, loop_count, field, serialNumberInput);
 		if (idx != e_no_match) {
 			loop_count = idx + 1;
 			found_flag = 1;
@@ -470,7 +515,7 @@ Status edit_person(AddressBook *address_book, int si_no) {
 	 */
 	char temp[10];
 	sprintf(temp, "%d", si_no);
-	int idx = search(temp, address_book, 0, e_si_no);
+	int idx = search(temp, address_book, 0, e_si_no, si_no);
 	ContactInfo *cI = &(address_book->list[idx]);
 
 	int running = 1;
@@ -552,6 +597,7 @@ Status delete_contact(AddressBook *address_book)
 	option = get_option(NUM, "Please select an option: ");
 
 	char userInput[NAME_LEN];
+	int serialNumberInput = 0;
 	Fields field;
 	switch (option)
 	{
@@ -586,7 +632,7 @@ Status delete_contact(AddressBook *address_book)
 	int loop_count = 0;
 	int found_flag = 0;
 	while (loop_count < address_book->count) {
-		int idx = search(userInput, address_book, loop_count, field);
+		int idx = search(userInput, address_book, loop_count, field, serialNumberInput);
 		if (idx != e_no_match) {
 			loop_count = idx + 1;
 			found_flag = 1;
@@ -628,7 +674,7 @@ Status delete_person(AddressBook *address_book, int si_no)
 	 */
 	char temp[10];
 	sprintf(temp, "%d", si_no);
-	int idx = search(temp, address_book, 0, e_si_no);
+	int idx = search(temp, address_book, 0, e_si_no, si_no);
 	ContactInfo *cI = &(address_book->list[idx]);
 
 	menu_header("Edit Contact: \n");
