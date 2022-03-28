@@ -1,3 +1,6 @@
+#ifndef REQUEST_H
+#define REQUEST_H
+
 #include "address_book.h"
 
 /*
@@ -92,4 +95,4 @@ int requestEmailIndex();
 // requestPurpose - In what sub-menu is the request being made?
 // Returns a number between 1 and numberOfContacts
 int requestSerialNumber(int numberOfContacts, Modes requestPurpose);
-
+#endif
